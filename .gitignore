@@ -32,3 +32,10 @@ install-fabric.sh
 
 # override the ignore of all config/ folders
 !full-stack-asset-transfer-guide/infrastructure/sample-network/config
+
+# 忽略 multiple-deployment 下的 chaincode 文件夹（含子文件）
+multiple-deployment/chaincode/
+# 忽略 multiple-deployment 下的 crypto-config 文件夹（含子文件）
+multiple-deployment/crypto-config/
+# 忽略 multiple-deployment 中所有 .tar.gz 文件（递归匹配子目录）
+multiple-deployment/**/*.tar.gz
