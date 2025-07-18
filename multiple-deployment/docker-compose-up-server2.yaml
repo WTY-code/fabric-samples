@@ -1,5 +1,9 @@
 version: '2'
 
+networks:
+  test:
+    name: fabric_test
+
 services:
   orderer2.example.com:
     container_name: orderer2.example.com
@@ -36,6 +40,8 @@ services:
     ports:
       - 7050:7050
       - 7055:7055
+    networks:
+      - test
     extra_hosts:
       - "orderer0.example.com:172.24.253.32"
       - "orderer1.example.com:172.24.253.32"
@@ -74,6 +80,8 @@ services:
       - 7051:7051
       - 7052:7052
       - 7053:7053
+    networks:
+      - test
     extra_hosts:
       - "orderer0.example.com:172.24.253.32"
       - "orderer1.example.com:172.24.253.32"
@@ -112,6 +120,8 @@ services:
       - 8051:8051
       - 8052:8052
       - 8053:8053
+    networks:
+      - test
     extra_hosts:
       - "orderer0.example.com:172.24.253.32"
       - "orderer1.example.com:172.24.253.32"
@@ -142,6 +152,8 @@ services:
         - ./chaincode/go/:/opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    networks:
+      - test
     extra_hosts:
       - "orderer0.example.com:172.24.253.32"
       - "orderer1.example.com:172.24.253.32"
@@ -176,6 +188,8 @@ services:
         - ./chaincode/go/:/opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    networks:
+      - test
     extra_hosts:
       - "orderer0.example.com:172.24.253.32"
       - "orderer1.example.com:172.24.253.32"
