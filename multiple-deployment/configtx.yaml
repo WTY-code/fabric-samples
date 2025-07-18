@@ -13,6 +13,10 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('OrdererMSP.admin')"
+        OrdererEndpoints:
+          - orderer0.example.com:7050
+          - orderer1.example.com:8050
+          - orderer2.example.com:7050
 
     - &Org1
         Name: Org1MSP
@@ -32,9 +36,9 @@ Organizations:
                 Type: Signature
                 Rule: "OR('Org1MSP.peer')"
 
-        AnchorPeers:
-            - Host: peer0.org1.example.com
-              Port: 7051
+        # AnchorPeers:
+        #     - Host: peer0.org1.example.com
+        #       Port: 7051
 
     - &Org2
         Name: Org2MSP
@@ -54,9 +58,9 @@ Organizations:
                 Type: Signature
                 Rule: "OR('Org2MSP.peer')"
 
-        AnchorPeers:
-            - Host: peer0.org2.example.com
-              Port: 7051
+        # AnchorPeers:
+        #     - Host: peer0.org2.example.com
+        #       Port: 7051
 
 Capabilities:
     Channel: &ChannelCapabilities
@@ -92,7 +96,7 @@ Application: &ApplicationDefaults
 
 Orderer: &OrdererDefaults
 
-    OrdererType: etcdraft
+    # OrdererType: etcdraft
 
     Addresses: # orderer 集群节点
         - orderer0.example.com:7050
@@ -150,25 +154,13 @@ Channel: &ChannelDefaults
 Profiles:
 
     TwoOrgsChannel:
-        Consortium: SampleConsortium
+        # Consortium: SampleConsortium
         <<: *ChannelDefaults
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *Org1
-                - *Org2
-            Capabilities:
-                <<: *ApplicationCapabilities
-
-    SampleMultiNodeEtcdRaft:
-        <<: *ChannelDefaults
-        Capabilities:
-            <<: *ChannelCapabilities
         Orderer:
             <<: *OrdererDefaults
             OrdererType: etcdraft
             EtcdRaft:
-                Consenters:
+              Consenters:
                 - Host: orderer0.example.com
                   Port: 7050
                   ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt
@@ -181,21 +173,13 @@ Profiles:
                   Port: 7050
                   ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
                   ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
-            Addresses:
-                - orderer0.example.com:7050
-                - orderer1.example.com:8050
-                - orderer2.example.com:7050
             Organizations:
-            - *OrdererOrg
-            Capabilities:
-                <<: *OrdererCapabilities
+              - *OrdererOrg
+            Capabilities: *OrdererCapabilities
+
         Application:
             <<: *ApplicationDefaults
             Organizations:
-            - <<: *OrdererOrg
-        Consortiums:
-            SampleConsortium:
-                Organizations:
                 - *Org1
                 - *Org2
-
+            Capabilities: *ApplicationCapabilities
