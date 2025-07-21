@@ -87,6 +87,8 @@ services:
       - "orderer1.example.com:172.24.253.32"
       - "orderer2.example.com:172.24.253.33"
       - "peer1.org2.example.com:172.24.253.33"
+      - "peer0.org1.example.com:172.24.253.32"
+      - "peer1.org1.example.com:172.24.253.32"
 
   peer1.org2.example.com:
     container_name: peer1.org2.example.com
@@ -128,6 +130,8 @@ services:
       - "orderer1.example.com:172.24.253.32"
       - "orderer2.example.com:172.24.253.33"
       - "peer0.org2.example.com:172.24.253.33"
+      - "peer0.org1.example.com:172.24.253.32"
+      - "peer1.org1.example.com:172.24.253.32"
 
   cli1:
     container_name: cli1
