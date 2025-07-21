@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -x
+osnadmin channel join --channelID mychannel --config-block ./channel-artifacts/genesis.block -o orderer0.example.com:7055 --ca-file "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem" --client-cert "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt" --client-key "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.key"
+
+set -x
+osnadmin channel join --channelID mychannel --config-block ./channel-artifacts/genesis.block -o orderer1.example.com:8055 --ca-file "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem" --client-cert "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/server.crt" --client-key "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/server.key"
+
+set -x
+osnadmin channel join --channelID mychannel --config-block ./channel-artifacts/genesis.block -o orderer2.example.com:7055 --ca-file "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem" --client-cert "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt" --client-key "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.key"
