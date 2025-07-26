@@ -16,6 +16,54 @@ function installChaincode() {
   successln "Chaincode is installed on peer0.org${ORG}"
 }
 
+# installChaincodeOnAllPeers ORG
+# Optional function to install chaincode on all peers of an organization
+function installChaincodeOnAllPeers() {
+  ORG=$1
+  
+  # Install on peer0
+  infoln "Installing chaincode on peer0.org${ORG}..."
+  setGlobals_MultiPeer $ORG 0
+  set -x
+  peer lifecycle chaincode queryinstalled --output json | jq -r 'try (.installed_chaincodes[].package_id)' | grep ^${PACKAGE_ID}$ >&log.txt
+  if test $? -ne 0; then
+    peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
+    res=$?
+  fi
+  { set +x; } 2>/dev/null
+  cat log.txt
+  verifyResult $res "Chaincode installation on peer0.org${ORG} has failed"
+  successln "Chaincode is installed on peer0.org${ORG}"
+  
+  # Install on peer1
+  infoln "Installing chaincode on peer1.org${ORG}..."
+  setGlobals_MultiPeer $ORG 1
+  set -x
+  peer lifecycle chaincode queryinstalled --output json | jq -r 'try (.installed_chaincodes[].package_id)' | grep ^${PACKAGE_ID}$ >&log.txt
+  if test $? -ne 0; then
+    peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
+    res=$?
+  fi
+  { set +x; } 2>/dev/null
+  cat log.txt
+  verifyResult $res "Chaincode installation on peer1.org${ORG} has failed"
+  successln "Chaincode is installed on peer1.org${ORG}"
+  
+  # Install on peer2
+  infoln "Installing chaincode on peer2.org${ORG}..."
+  setGlobals_MultiPeer $ORG 2
+  set -x
+  peer lifecycle chaincode queryinstalled --output json | jq -r 'try (.installed_chaincodes[].package_id)' | grep ^${PACKAGE_ID}$ >&log.txt
+  if test $? -ne 0; then
+    peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
+    res=$?
+  fi
+  { set +x; } 2>/dev/null
+  cat log.txt
+  verifyResult $res "Chaincode installation on peer2.org${ORG} has failed"
+  successln "Chaincode is installed on peer2.org${ORG}"
+}
+
 # queryInstalled PEER ORG
 function queryInstalled() {
   ORG=$1
@@ -89,6 +137,34 @@ function commitChaincodeDefinition() {
   cat log.txt
   verifyResult $res "Chaincode definition commit failed on peer0.org${ORG} on channel '$CHANNEL_NAME' failed"
   successln "Chaincode definition committed on channel '$CHANNEL_NAME'"
+}
+
+
+# commitChaincodeDefinitionOnAllPeers [all|peer0] [ORG1 ORG2 ORG3...]
+function commitChaincodeDefinitionAllPeers() {
+  parsePeerConnectionParameters_AllPeers  # Uses all 9 peers
+  # Connects to: peer0.org1, peer1.org1, peer2.org1, 
+  #              peer0.org2, peer1.org2, peer2.org2,
+  #              peer0.org3, peer1.org3, peer2.org3
+  
+  res=$?
+  verifyResult $res "Invoke transaction failed on channel '$CHANNEL_NAME' due to peer connection issues"
+
+  set -x
+  peer lifecycle chaincode commit -o localhost:7050 \
+    --ordererTLSHostnameOverride orderer.example.com \
+    --tls --cafile "$ORDERER_CA" \
+    --channelID $CHANNEL_NAME \
+    --name ${CC_NAME} \
+    "${PEER_CONN_PARMS[@]}" \
+    --version ${CC_VERSION} \
+    --sequence ${CC_SEQUENCE} \
+    ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
+  res=$?
+  { set +x; } 2>/dev/null
+  cat log.txt
+  verifyResult $res "Chaincode definition commit failed on channel '$CHANNEL_NAME'"
+  successln "Chaincode definition committed on channel '$CHANNEL_NAME' using all peers"
 }
 
 # queryCommitted ORG
@@ -302,7 +378,11 @@ chaincodeInvoke() {
     sleep $DELAY
     infoln "Attempting to Invoke on peer0.org${ORG}, Retry after $DELAY seconds."
     set -x
-    peer chaincode invoke -o localhost:7050 -C $CHANNEL_NAME -n ${CC_NAME} -c ${CC_INVOKE_CONSTRUCTOR} --tls --cafile $ORDERER_CA  --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA  >&log.txt
+    # Updated to include all three organizations
+    peer chaincode invoke -o localhost:7050 -C $CHANNEL_NAME -n ${CC_NAME} -c ${CC_INVOKE_CONSTRUCTOR} --tls --cafile $ORDERER_CA \
+      --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
+      --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+      --peerAddresses localhost:11051 --tlsRootCertFiles $PEER0_ORG3_CA >&log.txt
     res=$?
     { set +x; } 2>/dev/null
     let rc=$res
@@ -343,4 +423,42 @@ chaincodeQuery() {
   else
     fatalln "After $MAX_RETRY attempts, Query result on peer0.org${ORG} is INVALID!"
   fi
+}
+
+# Comprehensive health check for 3org/9peers setup
+function validateNetworkHealth() {
+  infoln "Performing comprehensive network health check..."
+  
+  # Check all peers are accessible
+  for ORG in 1 2 3; do
+    for PEER_NUM in 0 1 2; do
+      infoln "Checking peer${PEER_NUM}.org${ORG}..."
+      setGlobals_MultiPeer $ORG $PEER_NUM
+      
+      set -x
+      peer lifecycle chaincode queryinstalled --output json >&log.txt
+      res=$?
+      { set +x; } 2>/dev/null
+      
+      if [ $res -ne 0 ]; then
+        warnln "peer${PEER_NUM}.org${ORG} is not responding properly"
+      else
+        successln "peer${PEER_NUM}.org${ORG} is healthy"
+      fi
+    done
+  done
+  
+  # Verify channel membership for all peers
+  infoln "Verifying channel membership..."
+  for ORG in 1 2 3; do
+    for PEER_NUM in 0 1 2; do
+      setGlobals_MultiPeer $ORG $PEER_NUM
+      peer channel list >&log.txt
+      if grep -q "$CHANNEL_NAME" log.txt; then
+        successln "peer${PEER_NUM}.org${ORG} is joined to channel $CHANNEL_NAME"
+      else
+        errorln "peer${PEER_NUM}.org${ORG} is NOT joined to channel $CHANNEL_NAME"
+      fi
+    done
+  done
 }

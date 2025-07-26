@@ -27,7 +27,7 @@ if [ ! -d "channel-artifacts" ]; then
 fi
 
 createChannelGenesisBlock() {
-  setGlobals 1
+  setGlobals_MultiPeer 1 0
 	which configtxgen
 	if [ "$?" -ne 0 ]; then
 		fatalln "configtxgen tool not found."
@@ -72,22 +72,24 @@ createChannel() {
 # joinChannel ORG
 joinChannel() {
   ORG=$1
+  PEER_NUM=$2
   FABRIC_CFG_PATH=$PWD/../config/
-  setGlobals $ORG
+  setGlobals_MultiPeer $ORG $PEER_NUM
 	local rc=1
 	local COUNTER=1
 	## Sometimes Join takes time, hence retry
 	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
-    sleep $DELAY
-    set -x
-    peer channel join -b $BLOCKFILE >&log.txt
-    res=$?
-    { set +x; } 2>/dev/null
+    	sleep $DELAY
+    	set -x
+    	peer channel join -b $BLOCKFILE >&log.txt
+    	res=$?
+    	{ set +x; } 2>/dev/null
 		let rc=$res
 		COUNTER=$(expr $COUNTER + 1)
 	done
 	cat log.txt
-	verifyResult $res "After $MAX_RETRY attempts, peer0.org${ORG} has failed to join channel '$CHANNEL_NAME' "
+	verifyResult $res "After $MAX_RETRY attempts, peer${PEER_NUM}.org${ORG} has failed to join channel '$CHANNEL_NAME' "
+	peer channel list
 }
 
 setAnchorPeer() {
@@ -118,16 +120,39 @@ infoln "Creating channel ${CHANNEL_NAME}"
 createChannel $BFT
 successln "Channel '$CHANNEL_NAME' created"
 
-## Join all the peers to the channel
-infoln "Joining org1 peer to the channel..."
-joinChannel 1
-infoln "Joining org2 peer to the channel..."
-joinChannel 2
+# ## Join all the peers to the channel
+# infoln "Joining org1 peer to the channel..."
+# joinChannel 1
+# infoln "Joining org2 peer to the channel..."
+# joinChannel 2
+# infoln "Joining org3 peer to the channel..."
+# joinChannel 3
+
+# Join Org1 peers
+infoln "Joining org1 peers to the channel..."
+joinChannel 1 0  # peer0.org1
+joinChannel 1 1  # peer1.org1
+joinChannel 1 2  # peer2.org1
+
+# Join Org2 peers
+infoln "Joining org2 peers to the channel..."
+joinChannel 2 0  # peer0.org2
+joinChannel 2 1  # peer1.org2
+joinChannel 2 2  # peer2.org2
+
+# Join Org3 peers
+infoln "Joining org3 peers to the channel..."
+joinChannel 3 0  # peer0.org3
+joinChannel 3 1  # peer1.org3
+joinChannel 3 2  # peer2.org3
 
 ## Set the anchor peers for each org in the channel
 infoln "Setting anchor peer for org1..."
 setAnchorPeer 1
 infoln "Setting anchor peer for org2..."
 setAnchorPeer 2
+infoln "Setting anchor peer for org3..."
+setAnchorPeer 3
 
-successln "Channel '$CHANNEL_NAME' joined"
+# successln "Channel '$CHANNEL_NAME' joined"
+successln "Channel '$CHANNEL_NAME' joined with all peers from all three organizations"
