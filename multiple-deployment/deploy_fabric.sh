@@ -58,6 +58,21 @@ done
 echo "===== 加入Peer节点 done ====="
 sleep 10
 
+echo "===== 检查各节点账本高度 ====="
+# 检查各节点账本高度
+for machine in 1 2; do
+  ip_var="MACHINE${machine}_IP"
+  pass_var="MACHINE${machine}_PASS"
+    
+  # 在所有容器上检查链码
+  for cli in cli1 cli2; do
+    echo "ledger height: $MACHINE${machine} $cli"
+    run_remote ${!ip_var} ${!pass_var} "docker exec $cli peer channel getinfo -c mychannel"
+    sleep 5
+  done
+done
+echo "===== 检查各节点账本高度 done====="
+
 # 步骤4: 设置锚节点
 echo "===== 设置锚节点 ====="
 run_remote $MACHINE1_IP $MACHINE1_PASS "docker cp setOrg1Anchor.sh cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer"
@@ -78,6 +93,7 @@ for machine in 1 2; do
     
   # 在所有容器上检查链码
   for cli in cli1 cli2; do
+    echo "ledger height: $MACHINE${machine} $cli"
     run_remote ${!ip_var} ${!pass_var} "docker exec $cli peer channel getinfo -c mychannel"
     sleep 5
   done
