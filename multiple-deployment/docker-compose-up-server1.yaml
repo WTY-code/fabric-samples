@@ -147,6 +147,9 @@ services:
       - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
       - CORE_PEER_CHAINCODEADDRESS=peer1.org1.example.com:8052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      # Enables this peer to disseminate blocks it pulls from the ordering service
+      # to other peers in the same organization via gossip.
+      - CORE_PEER_DELIVERYCLIENT_BLOCKGOSSIPENABLED=true
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:8051
       - CORE_PEER_LOCALMSPID=Org1MSP
