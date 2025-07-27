@@ -100,7 +100,7 @@ for machine in 1 2; do
 done
 echo "===== 检查各节点账本高度 done====="
 
-exit 0
+# exit 0
 
 # # 步骤5: 安装链码
 # echo "===== 安装链码 ====="
@@ -232,7 +232,8 @@ for machine in 1 2; do
   done
 done
 
-exit 0
+# exit 0
+
 # # 步骤6: 部署链码（序列1）
 # echo "===== 部署链码序列1 ====="
 # run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode approveformyorg -o orderer0.example.com:7050 \
