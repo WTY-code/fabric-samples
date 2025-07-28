@@ -143,7 +143,6 @@ services:
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-    - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_METRICS_PROVIDER=prometheus
     - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9643
     - CORE_PEER_GATEWAY_ENDORSEMENTTIMEOUT=30s
@@ -271,7 +270,6 @@ services:
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-    - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_METRICS_PROVIDER=prometheus
     - CORE_OPERATIONS_LISTENADDRESS=peer1.org1.example.com:9653
     - CORE_PEER_GATEWAY_ENDORSEMENTTIMEOUT=30s
@@ -385,7 +383,6 @@ services:
     environment:
     - GOPATH=/opt/gopath
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      # - FABRIC_LOGGING_SPEC=DEBUG
     - FABRIC_LOGGING_SPEC=INFO
     - CORE_PEER_ID=cli1
     - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
@@ -421,7 +418,6 @@ services:
     environment:
     - GOPATH=/opt/gopath
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      # - FABRIC_LOGGING_SPEC=DEBUG
     - FABRIC_LOGGING_SPEC=INFO
     - CORE_PEER_ID=cli2
     - CORE_PEER_ADDRESS=peer1.org1.example.com:8051
