@@ -65,11 +65,11 @@ Organizations:
 
 Capabilities:
   Channel: &ChannelCapabilities
-    V3_0: true
+    V2_0: true
   Orderer: &OrdererCapabilities
     V2_0: true
   Application: &ApplicationCapabilities
-    V2_5: true
+    V2_0: true
 
 Application: &ApplicationDefaults
 
@@ -105,12 +105,12 @@ Orderer: &OrdererDefaults
   - orderer2.example.com:7050
   - orderer3.example.com:8050
     # Batch Timeout: The amount of time to wait before creating a batch
-  BatchTimeout: 10s
+  BatchTimeout: 2s
 
     # Batch Size: Controls the number of messages batched into a block
   BatchSize:
 
-    MaxMessageCount: 100
+    MaxMessageCount: 10
 
     AbsoluteMaxBytes: 99 MB
 
@@ -160,53 +160,29 @@ Profiles:
     <<: *ChannelDefaults
     Orderer:
       <<: *OrdererDefaults
+      OrdererType: etcdraft
+      EtcdRaft:
+        Consenters:
+        - Host: orderer0.example.com
+          Port: 7050
+          ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt
+          ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt
+        - Host: orderer1.example.com
+          Port: 8050
+          ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/server.crt
+          ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/server.crt
+        - Host: orderer2.example.com
+          Port: 7050
+          ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
+          ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
+        - Host: orderer2.example.com
+          Port: 8050
+          ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt
+          ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt
       Organizations:
       - *OrdererOrg
       Capabilities: *OrdererCapabilities
-      OrdererType: BFT
-      SmartBFT:
-        RequestBatchMaxCount: 200
-        RequestBatchMaxInterval: 50ms
-        RequestForwardTimeout: 2s
-        RequestComplainTimeout: 20s
-        RequestAutoRemoveTimeout: 3m0s
-        ViewChangeResendInterval: 5s
-        ViewChangeTimeout: 20s
-        LeaderHeartbeatTimeout: 1m0s
-        CollectTimeout: 1s
-        RequestBatchMaxBytes: 10485760
-        IncomingMessageBufferSize: 500
-        RequestPoolSize: 100000
-        LeaderHeartbeatCount: 10
-      ConsenterMapping:
-      - ID: 1
-        Host: orderer0.example.com
-        Port: 7050
-        MSPID: OrdererMSP
-        Identity: crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/msp/signcerts/orderer0.example.com-cert.pem
-        ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt
-        ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt
-      - ID: 2
-        Host: orderer1.example.com
-        Port: 8050
-        MSPID: OrdererMSP
-        Identity: crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/msp/signcerts/orderer1.example.com-cert.pem
-        ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/server.crt
-        ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/server.crt
-      - ID: 3
-        Host: orderer2.example.com
-        Port: 7050
-        MSPID: OrdererMSP
-        Identity: crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/signcerts/orderer2.example.com-cert.pem
-        ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
-        ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
-      - ID: 4
-        Host: orderer3.example.com
-        Port: 8050
-        MSPID: OrdererMSP
-        Identity: crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/msp/signcerts/orderer3.example.com-cert.pem
-        ClientTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt
-        ServerTLSCert: crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt
+
     Application:
       <<: *ApplicationDefaults
       Organizations:
