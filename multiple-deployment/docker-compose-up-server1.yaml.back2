@@ -59,10 +59,10 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
 
   orderer1.example.com:
     container_name: orderer1.example.com
@@ -118,10 +118,10 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
@@ -244,13 +244,13 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
-    - "peer1.org1.example.com:39.107.10.177"
-    - "peer0.org2.example.com:39.97.158.179"
-    - "peer1.org2.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
+    - "peer1.org1.example.com:172.24.253.32"
+    - "peer0.org2.example.com:172.24.253.33"
+    - "peer1.org2.example.com:172.24.253.33"
 
   peer1.org1.example.com:
     container_name: peer1.org1.example.com
@@ -373,13 +373,13 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
-    - "peer0.org1.example.com:39.107.10.177"
-    - "peer0.org2.example.com:39.97.158.179"
-    - "peer1.org2.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
+    - "peer0.org1.example.com:172.24.253.32"
+    - "peer0.org2.example.com:172.24.253.33"
+    - "peer1.org2.example.com:172.24.253.33"
 
   cli1:
     container_name: cli1
@@ -408,14 +408,14 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
-    - "peer0.org1.example.com:39.107.10.177"
-    - "peer1.org1.example.com:39.107.10.177"
-    - "peer0.org2.example.com:39.97.158.179"
-    - "peer1.org2.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
+    - "peer0.org1.example.com:172.24.253.32"
+    - "peer1.org1.example.com:172.24.253.32"
+    - "peer0.org2.example.com:172.24.253.33"
+    - "peer1.org2.example.com:172.24.253.33"
 
   cli2:
     container_name: cli2
@@ -444,11 +444,11 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
-    - "peer0.org1.example.com:39.107.10.177"
-    - "peer1.org1.example.com:39.107.10.177"
-    - "peer0.org2.example.com:39.97.158.179"
-    - "peer1.org2.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
+    - "peer0.org1.example.com:172.24.253.32"
+    - "peer1.org1.example.com:172.24.253.32"
+    - "peer0.org2.example.com:172.24.253.33"
+    - "peer1.org2.example.com:172.24.253.33"

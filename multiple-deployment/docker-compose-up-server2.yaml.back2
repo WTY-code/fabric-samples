@@ -5,8 +5,8 @@ networks:
     name: fabric_test
 
 services:
-  orderer0.example.com:
-    container_name: orderer0.example.com
+  orderer2.example.com:
+    container_name: orderer2.example.com
     image: hyperledger/fabric-orderer
     environment:
     - FABRIC_LOGGING_SPEC=INFO
@@ -30,7 +30,7 @@ services:
     - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
     - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
     - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7055
-    - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9443
+    - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9463
     - ORDERER_METRICS_PROVIDER=prometheus
     - ORDERER_GENERAL_KEEPALIVE_SERVERMININTERVAL=60s
     - ORDERER_GENERAL_KEEPALIVE_SERVERINTERVAL=7200s
@@ -50,22 +50,22 @@ services:
     command: orderer
     volumes:
     - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/msp:/var/hyperledger/orderer/msp
-    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/:/var/hyperledger/orderer/tls
+    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/msp:/var/hyperledger/orderer/msp
+    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/:/var/hyperledger/orderer/tls
     ports:
     - 7050:7050
     - 7055:7055
-    - 9443:9443
+    - 9463:9463
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
 
-  orderer1.example.com:
-    container_name: orderer1.example.com
+  orderer3.example.com:
+    container_name: orderer3.example.com
     image: hyperledger/fabric-orderer
     environment:
     - FABRIC_LOGGING_SPEC=INFO
@@ -89,7 +89,7 @@ services:
     - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
     - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
     - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:8055
-    - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9453
+    - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9473
     - ORDERER_METRICS_PROVIDER=prometheus
     - ORDERER_GENERAL_KEEPALIVE_SERVERMININTERVAL=60s
     - ORDERER_GENERAL_KEEPALIVE_SERVERINTERVAL=7200s
@@ -109,36 +109,36 @@ services:
     command: orderer
     volumes:
     - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/msp:/var/hyperledger/orderer/msp
-    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/:/var/hyperledger/orderer/tls
+    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/msp:/var/hyperledger/orderer/msp
+    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/:/var/hyperledger/orderer/tls
     ports:
     - 8050:8050
     - 8055:8055
-    - 9453:9453
+    - 9473:9473
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
 
-  peer0.org1.example.com:
-    container_name: peer0.org1.example.com
+  peer0.org2.example.com:
+    container_name: peer0.org2.example.com
     image: hyperledger/fabric-peer
     environment:
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-    - CORE_PEER_ID=peer0.org1.example.com
-    - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+    - CORE_PEER_ID=peer0.org2.example.com
+    - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
     - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-    - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
+    - CORE_PEER_CHAINCODEADDRESS=peer0.org2.example.com:7052
     - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051
     - CORE_PEER_DELIVERYCLIENT_BLOCKGOSSIPENABLED=true
     - CORE_PEER_DISCOVERY_ORGMEMBERSALLOWEDACCESS=true
     - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051,peer0.org2.example.com:7051
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
-    - CORE_PEER_LOCALMSPID=Org1MSP
-    - FABRIC_LOGGING_SPEC=INFO
+    - CORE_PEER_LOCALMSPID=Org2MSP
+    - FABRIC_LOGGING_SPEC=DEBUG
     - CORE_PEER_TLS_ENABLED=true
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -147,7 +147,7 @@ services:
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
     - CORE_METRICS_PROVIDER=prometheus
-    - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9643
+    - CORE_OPERATIONS_LISTENADDRESS=peer0.org2.example.com:9743
     - CORE_PEER_GATEWAY_ENDORSEMENTTIMEOUT=30s
     - CORE_PEER_GATEWAY_BROADCASTTIMEOUT=30s
     - CORE_PEER_GATEWAY_DIALTIMEOUT=2m
@@ -235,39 +235,39 @@ services:
     command: peer node start
     volumes:
     - /var/run/:/host/var/run/
-    - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp
-    - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/fabric/msp
+    - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls
     ports:
     - 7051:7051
     - 7052:7052
-    - 9643:9643
+    - 7053:7053
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
-    - "peer1.org1.example.com:39.107.10.177"
-    - "peer0.org2.example.com:39.97.158.179"
-    - "peer1.org2.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
+    - "peer1.org2.example.com:172.24.253.33"
+    - "peer0.org1.example.com:172.24.253.32"
+    - "peer1.org1.example.com:172.24.253.32"
 
-  peer1.org1.example.com:
-    container_name: peer1.org1.example.com
+  peer1.org2.example.com:
+    container_name: peer1.org2.example.com
     image: hyperledger/fabric-peer
     environment:
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-    - CORE_PEER_ID=peer1.org1.example.com
-    - CORE_PEER_ADDRESS=peer1.org1.example.com:8051
+    - CORE_PEER_ID=peer1.org2.example.com
+    - CORE_PEER_ADDRESS=peer1.org2.example.com:8051
     - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
-    - CORE_PEER_CHAINCODEADDRESS=peer1.org1.example.com:8052
+    - CORE_PEER_CHAINCODEADDRESS=peer1.org2.example.com:8052
     - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.example.com:8051
     - CORE_PEER_DELIVERYCLIENT_BLOCKGOSSIPENABLED=true
     - CORE_PEER_DISCOVERY_ORGMEMBERSALLOWEDACCESS=true
     - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051,peer0.org2.example.com:7051
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:8051
-    - CORE_PEER_LOCALMSPID=Org1MSP
-    - FABRIC_LOGGING_SPEC=INFO
+    - CORE_PEER_LOCALMSPID=Org2MSP
+    - FABRIC_LOGGING_SPEC=DEBUG
     - CORE_PEER_TLS_ENABLED=true
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
     - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -276,7 +276,7 @@ services:
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
     - CORE_METRICS_PROVIDER=prometheus
-    - CORE_OPERATIONS_LISTENADDRESS=peer1.org1.example.com:9653
+    - CORE_OPERATIONS_LISTENADDRESS=peer1.org2.example.com:9753
     - CORE_PEER_GATEWAY_ENDORSEMENTTIMEOUT=30s
     - CORE_PEER_GATEWAY_BROADCASTTIMEOUT=30s
     - CORE_PEER_GATEWAY_DIALTIMEOUT=2m
@@ -364,22 +364,22 @@ services:
     command: peer node start
     volumes:
     - /var/run/:/host/var/run/
-    - ./crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/etc/hyperledger/fabric/msp
-    - ./crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    - ./crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/etc/hyperledger/fabric/msp
+    - ./crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/etc/hyperledger/fabric/tls
     ports:
     - 8051:8051
     - 8052:8052
-    - 9653:9653
+    - 8053:8053
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
-    - "peer0.org1.example.com:39.107.10.177"
-    - "peer0.org2.example.com:39.97.158.179"
-    - "peer1.org2.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
+    - "peer0.org2.example.com:172.24.253.33"
+    - "peer0.org1.example.com:172.24.253.32"
+    - "peer1.org1.example.com:172.24.253.32"
 
   cli1:
     container_name: cli1
@@ -389,15 +389,16 @@ services:
     environment:
     - GOPATH=/opt/gopath
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-    - FABRIC_LOGGING_SPEC=INFO
+    - FABRIC_LOGGING_SPEC=DEBUG
+      # - FABRIC_LOGGING_SPEC=INFO
     - CORE_PEER_ID=cli1
-    - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-    - CORE_PEER_LOCALMSPID=Org1MSP
+    - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+    - CORE_PEER_LOCALMSPID=Org2MSP
     - CORE_PEER_TLS_ENABLED=true
-    - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
-    - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key
-    - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-    - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.crt
+    - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.key
+    - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:
@@ -408,14 +409,14 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
-    - "peer0.org1.example.com:39.107.10.177"
-    - "peer1.org1.example.com:39.107.10.177"
-    - "peer0.org2.example.com:39.97.158.179"
-    - "peer1.org2.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
+    - "peer0.org1.example.com:172.24.253.32"
+    - "peer1.org1.example.com:172.24.253.32"
+    - "peer0.org2.example.com:172.24.253.33"
+    - "peer1.org2.example.com:172.24.253.33"
 
   cli2:
     container_name: cli2
@@ -425,15 +426,16 @@ services:
     environment:
     - GOPATH=/opt/gopath
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-    - FABRIC_LOGGING_SPEC=INFO
+    - FABRIC_LOGGING_SPEC=DEBUG
+      # - FABRIC_LOGGING_SPEC=INFO
     - CORE_PEER_ID=cli2
-    - CORE_PEER_ADDRESS=peer1.org1.example.com:8051
-    - CORE_PEER_LOCALMSPID=Org1MSP
+    - CORE_PEER_ADDRESS=peer1.org2.example.com:8051
+    - CORE_PEER_LOCALMSPID=Org2MSP
     - CORE_PEER_TLS_ENABLED=true
-    - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/server.crt
-    - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/server.key
-    - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
-    - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/server.crt
+    - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/server.key
+    - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt
+    - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:
@@ -444,11 +446,11 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:39.107.10.177"
-    - "orderer1.example.com:39.107.10.177"
-    - "orderer2.example.com:39.97.158.179"
-    - "orderer3.example.com:39.97.158.179"
-    - "peer0.org1.example.com:39.107.10.177"
-    - "peer1.org1.example.com:39.107.10.177"
-    - "peer0.org2.example.com:39.97.158.179"
-    - "peer1.org2.example.com:39.97.158.179"
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
+    - "peer0.org1.example.com:172.24.253.32"
+    - "peer1.org1.example.com:172.24.253.32"
+    - "peer0.org2.example.com:172.24.253.33"
+    - "peer1.org2.example.com:172.24.253.33"
