@@ -7,3 +7,6 @@ osnadmin channel join --channelID mychannel --config-block ./channel-artifacts/g
 
 set -x
 osnadmin channel join --channelID mychannel --config-block ./channel-artifacts/genesis.block -o orderer2.example.com:7055 --ca-file "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem" --client-cert "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt" --client-key "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.key"
+
+set -x
+osnadmin channel join --channelID mychannel --config-block ./channel-artifacts/genesis.block -o orderer3.example.com:8055 --ca-file "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem" --client-cert "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt" --client-key "/root/ruc/fabric-samples/multiple-deployment/crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.key"
