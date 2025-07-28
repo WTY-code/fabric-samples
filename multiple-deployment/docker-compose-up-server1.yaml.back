@@ -9,6 +9,7 @@ services:
     container_name: orderer0.example.com
     image: hyperledger/fabric-orderer
     environment:
+      # - FABRIC_LOGGING_SPEC=DEBUG
     - FABRIC_LOGGING_SPEC=INFO
     - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
     - ORDERER_GENERAL_LISTENPORT=7050
@@ -16,6 +17,7 @@ services:
     - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/orderer/orderer.genesis.block
     - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
     - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
     - ORDERER_GENERAL_TLS_ENABLED=true
     - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
     - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
@@ -32,6 +34,7 @@ services:
     - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7055
     - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9443
     - ORDERER_METRICS_PROVIDER=prometheus
+      # tunning knobs
     - ORDERER_GENERAL_KEEPALIVE_SERVERMININTERVAL=60s
     - ORDERER_GENERAL_KEEPALIVE_SERVERINTERVAL=7200s
     - ORDERER_GENERAL_KEEPALIVE_SERVERTIMEOUT=20s
@@ -74,6 +77,7 @@ services:
     - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/orderer/orderer.genesis.block
     - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
     - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
     - ORDERER_GENERAL_TLS_ENABLED=true
     - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
     - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
@@ -90,6 +94,7 @@ services:
     - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:8055
     - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9453
     - ORDERER_METRICS_PROVIDER=prometheus
+      # tunning knobs
     - ORDERER_GENERAL_KEEPALIVE_SERVERMININTERVAL=60s
     - ORDERER_GENERAL_KEEPALIVE_SERVERINTERVAL=7200s
     - ORDERER_GENERAL_KEEPALIVE_SERVERTIMEOUT=20s
@@ -131,10 +136,13 @@ services:
     - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
     - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
     - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      # Enables this peer to disseminate blocks it pulls from the ordering service
+      # to other peers in the same organization via gossip.
     - CORE_PEER_DELIVERYCLIENT_BLOCKGOSSIPENABLED=true
     - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
     - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
     - CORE_PEER_LOCALMSPID=Org1MSP
+      # - FABRIC_LOGGING_SPEC=DEBUG
     - FABRIC_LOGGING_SPEC=INFO
     - CORE_PEER_TLS_ENABLED=true
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
@@ -143,9 +151,11 @@ services:
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Allow more time for chaincode container to build on install.
     - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_METRICS_PROVIDER=prometheus
     - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9643
+      # tunning knobs
     - CORE_PEER_GATEWAY_ENDORSEMENTTIMEOUT=30s
     - CORE_PEER_GATEWAY_BROADCASTTIMEOUT=30s
     - CORE_PEER_GATEWAY_DIALTIMEOUT=2m
@@ -259,10 +269,13 @@ services:
     - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
     - CORE_PEER_CHAINCODEADDRESS=peer1.org1.example.com:8052
     - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      # Enables this peer to disseminate blocks it pulls from the ordering service
+      # to other peers in the same organization via gossip.
     - CORE_PEER_DELIVERYCLIENT_BLOCKGOSSIPENABLED=true
     - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
     - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:8051
     - CORE_PEER_LOCALMSPID=Org1MSP
+      # - FABRIC_LOGGING_SPEC=DEBUG
     - FABRIC_LOGGING_SPEC=INFO
     - CORE_PEER_TLS_ENABLED=true
     - CORE_PEER_GOSSIP_USELEADERELECTION=true
@@ -271,9 +284,11 @@ services:
     - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Allow more time for chaincode container to build on install.
     - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_METRICS_PROVIDER=prometheus
     - CORE_OPERATIONS_LISTENADDRESS=peer1.org1.example.com:9653
+      # tunning knobs
     - CORE_PEER_GATEWAY_ENDORSEMENTTIMEOUT=30s
     - CORE_PEER_GATEWAY_BROADCASTTIMEOUT=30s
     - CORE_PEER_GATEWAY_DIALTIMEOUT=2m
