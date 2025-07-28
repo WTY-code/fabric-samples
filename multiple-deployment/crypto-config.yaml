@@ -8,21 +8,29 @@ OrdererOrgs:
           - "localhost"
           - "127.0.0.1"
           - "39.107.10.177"   # 机器1的公网IP
+          - "orderer0"
+          - "orderer0.example.com"
       - Hostname: orderer1
         SANS:
           - "localhost"
           - "127.0.0.1"
           - "39.107.10.177"   # 机器1的公网IP
+          - "orderer1"
+          - "orderer1.example.com"
       - Hostname: orderer2
         SANS:
           - "localhost"
           - "127.0.0.1"
           - "39.97.158.179"   # 机器2的公网IP
+          - "orderer2"
+          - "orderer2.example.com"
       - Hostname: orderer3
         SANS:
           - "localhost"
           - "127.0.0.1"
           - "39.97.158.179"   # 机器2的公网IP
+          - "orderer3"
+          - "orderer3.example.com"
 
 PeerOrgs:
   - Name: Org1
@@ -35,6 +43,8 @@ PeerOrgs:
         - "localhost"
         - "127.0.0.1"
         - "39.107.10.177"   # 机器1的公网IP
+        - "peer0.org1.example.com"
+        - "peer1.org1.example.com"
     Users:
       Count: 1
   - Name: Org2
@@ -47,5 +57,7 @@ PeerOrgs:
         - "localhost"
         - "127.0.0.1"
         - "39.97.158.179"   # 机器2的公网IP
+        - "peer0.org2.example.com"
+        - "peer1.org2.example.com"
     Users:
       Count: 1
