@@ -152,7 +152,7 @@ services:
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Allow more time for chaincode container to build on install.
-    - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+    #- CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_METRICS_PROVIDER=prometheus
     - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:9643
       # tunning knobs
@@ -285,7 +285,7 @@ services:
     - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
     - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Allow more time for chaincode container to build on install.
-    - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+    #- CORE_CHAINCODE_EXECUTETIMEOUT=300s
     - CORE_METRICS_PROVIDER=prometheus
     - CORE_OPERATIONS_LISTENADDRESS=peer1.org1.example.com:9653
       # tunning knobs
