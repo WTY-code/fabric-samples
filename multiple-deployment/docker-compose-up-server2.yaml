@@ -55,12 +55,73 @@ services:
     ports:
     - 7050:7050
     - 7055:7055
+    - 9463:9463
     networks:
     - test
     extra_hosts:
     - "orderer0.example.com:172.24.253.32"
     - "orderer1.example.com:172.24.253.32"
     - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
+
+  orderer3.example.com:
+    container_name: orderer3.example.com
+    image: hyperledger/fabric-orderer
+    environment:
+    - FABRIC_LOGGING_SPEC=INFO
+    - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+    - ORDERER_GENERAL_LISTENPORT=8050
+    - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+    - ORDERER_GENERAL_BOOTSTRAPFILE=/var/hyperledger/orderer/orderer.genesis.block
+    - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+    - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+    - ORDERER_GENERAL_TLS_ENABLED=true
+    - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+    - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+    - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+    - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+    - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+    - ORDERER_ADMIN_TLS_ENABLED=true
+    - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+    - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+    - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:8055
+    - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:9473
+    - ORDERER_METRICS_PROVIDER=prometheus
+    - ORDERER_GENERAL_KEEPALIVE_SERVERMININTERVAL=60s
+    - ORDERER_GENERAL_KEEPALIVE_SERVERINTERVAL=7200s
+    - ORDERER_GENERAL_KEEPALIVE_SERVERTIMEOUT=20s
+    - ORDERER_GENERAL_BACKOFF_BASEDELAY=1s
+    - ORDERER_GENERAL_BACKOFF_MULTIPLIER=1.6
+    - ORDERER_GENERAL_BACKOFF_MAXDELAY=2m
+    - ORDERER_GENERAL_MAXRECVMSGSIZE=104857600
+    - ORDERER_GENERAL_MAXSENDMSGSIZE=104857600
+    - ORDERER_GENERAL_THROTTLING_RATE=0
+    - ORDERER_GENERAL_THROTTLING_INACTIVITYTIMEOUT=5s
+    - ORDERER_GENERAL_CLUSTER_SENDBUFFERSIZE=100
+    - ORDERER_GENERAL_AUTHENTICATION_TIMEWINDOW=15m
+    - ORDERER_METRICS_STATSD_WRITEINTERVAL=30s
+    - ORDERER_CHANNELPARTICIPATION_MAXREQUESTBODYSIZE=1MB
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/msp:/var/hyperledger/orderer/msp
+    - ./crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/:/var/hyperledger/orderer/tls
+    ports:
+    - 8050:8050
+    - 8055:8055
+    - 9473:9473
+    networks:
+    - test
+    extra_hosts:
+    - "orderer0.example.com:172.24.253.32"
+    - "orderer1.example.com:172.24.253.32"
+    - "orderer2.example.com:172.24.253.33"
+    - "orderer3.example.com:172.24.253.33"
 
   peer0.org2.example.com:
     container_name: peer0.org2.example.com
