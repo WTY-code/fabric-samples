@@ -1,0 +1,89 @@
+---
+name: test-network-org2
+version: 1.0.0
+client:
+  organization: Org2
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+organizations:
+  Org2:
+    mspid: Org2MSP
+    peers:
+    - peer0.org2.example.com
+    - peer1.org2.example.com
+    certificateAuthorities:
+    - ca.org2.example.com
+peers:
+  peer0.org2.example.com:
+    url: grpcs://peer0.org2.example.com:7051
+    tlsCACerts:
+      pem: |
+          -----BEGIN CERTIFICATE-----
+          MIICWDCCAf6gAwIBAgIRAO4hReSG/T5YX7nQ9B1DugowCgYIKoZIzj0EAwIwdjEL
+          MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+          cmFuY2lzY28xGTAXBgNVBAoTEG9yZzIuZXhhbXBsZS5jb20xHzAdBgNVBAMTFnRs
+          c2NhLm9yZzIuZXhhbXBsZS5jb20wHhcNMjUwNzI5MDA1MzAwWhcNMzUwNzI3MDA1
+          MzAwWjB2MQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UE
+          BxMNU2FuIEZyYW5jaXNjbzEZMBcGA1UEChMQb3JnMi5leGFtcGxlLmNvbTEfMB0G
+          A1UEAxMWdGxzY2Eub3JnMi5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49
+          AwEHA0IABMUZdWEAG+K4+wc7szci4yuLoysnXae+7IjrxjJ9RqamDq19r7sSzJ8i
+          QF/V2RKV1kWqMVqvgLblV8RV3Xg1fJCjbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNV
+          HSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwDwYDVR0TAQH/BAUwAwEB/zApBgNV
+          HQ4EIgQgWmb9s8QthifMiyU8wCxbY8OuwPDtlatYi2j4gT+QuFYwCgYIKoZIzj0E
+          AwIDSAAwRQIgEt4HlRPN1sV2a01od3EPy76abowlXz71lWs9ZVlgb0cCIQCLeO8o
+          XZun5GS1K6g8CI7WzAeCVJEN8uCCH0lso6i0wA==
+          -----END CERTIFICATE-----
+          
+    grpcOptions:
+      ssl-target-name-override: peer0.org2.example.com
+      hostnameOverride: peer0.org2.example.com
+  peer1.org2.example.com:
+    url: grpcs://peer1.org2.example.com:7051
+    tlsCACerts:
+      pem: |
+          -----BEGIN CERTIFICATE-----
+          MIICWDCCAf6gAwIBAgIRAO4hReSG/T5YX7nQ9B1DugowCgYIKoZIzj0EAwIwdjEL
+          MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+          cmFuY2lzY28xGTAXBgNVBAoTEG9yZzIuZXhhbXBsZS5jb20xHzAdBgNVBAMTFnRs
+          c2NhLm9yZzIuZXhhbXBsZS5jb20wHhcNMjUwNzI5MDA1MzAwWhcNMzUwNzI3MDA1
+          MzAwWjB2MQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UE
+          BxMNU2FuIEZyYW5jaXNjbzEZMBcGA1UEChMQb3JnMi5leGFtcGxlLmNvbTEfMB0G
+          A1UEAxMWdGxzY2Eub3JnMi5leGFtcGxlLmNvbTBZMBMGByqGSM49AgEGCCqGSM49
+          AwEHA0IABMUZdWEAG+K4+wc7szci4yuLoysnXae+7IjrxjJ9RqamDq19r7sSzJ8i
+          QF/V2RKV1kWqMVqvgLblV8RV3Xg1fJCjbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNV
+          HSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwEwDwYDVR0TAQH/BAUwAwEB/zApBgNV
+          HQ4EIgQgWmb9s8QthifMiyU8wCxbY8OuwPDtlatYi2j4gT+QuFYwCgYIKoZIzj0E
+          AwIDSAAwRQIgEt4HlRPN1sV2a01od3EPy76abowlXz71lWs9ZVlgb0cCIQCLeO8o
+          XZun5GS1K6g8CI7WzAeCVJEN8uCCH0lso6i0wA==
+          -----END CERTIFICATE-----
+          
+    grpcOptions:
+      ssl-target-name-override: peer1.org2.example.com
+      hostnameOverride: peer1.org2.example.com
+certificateAuthorities:
+  ca.org2.example.com:
+    url: https://localhost:7054
+    caName: ca-org2
+    tlsCACerts:
+      pem: 
+        - |
+          -----BEGIN CERTIFICATE-----
+          MIICUTCCAfegAwIBAgIQKecKHoz/cXw5yLSiLeh63TAKBggqhkjOPQQDAjBzMQsw
+          CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy
+          YW5jaXNjbzEZMBcGA1UEChMQb3JnMi5leGFtcGxlLmNvbTEcMBoGA1UEAxMTY2Eu
+          b3JnMi5leGFtcGxlLmNvbTAeFw0yNTA3MjkwMDUzMDBaFw0zNTA3MjcwMDUzMDBa
+          MHMxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1T
+          YW4gRnJhbmNpc2NvMRkwFwYDVQQKExBvcmcyLmV4YW1wbGUuY29tMRwwGgYDVQQD
+          ExNjYS5vcmcyLmV4YW1wbGUuY29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE
+          6DriIduFBzU8/QL9/+3xvpJWgGoEpyRPkun6kxn0pYOugzxORt0d3Vn4Sa8V5ZR7
+          wGBntsmcjWopo+8FYRJkR6NtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1UdJQQWMBQG
+          CCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1UdDgQiBCCh
+          V9cW0+4zjKfwgvVJuSeFgTiElR/WwJT+1KiMzx1vTjAKBggqhkjOPQQDAgNIADBF
+          AiEA+kP9WAoxNugcUQN9uWH6cSsFW2AJWVceeRsWE0EuwBECIANaoE+X1wF2Io+i
+          0Z42z+/6vPA809qpP3aOCF8IEh/x
+          -----END CERTIFICATE-----
+          
+    httpOptions:
+      verify: false
