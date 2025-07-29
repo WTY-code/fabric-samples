@@ -59,10 +59,10 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:172.24.253.32"
-    - "orderer1.example.com:172.24.253.32"
-    - "orderer2.example.com:172.24.253.33"
-    - "orderer3.example.com:172.24.253.33"
+    - "orderer0.example.com:39.107.10.177"
+    - "orderer1.example.com:39.107.10.177"
+    - "orderer2.example.com:39.97.158.179"
+    - "orderer3.example.com:39.97.158.179"
 
   orderer1.example.com:
     container_name: orderer1.example.com
@@ -118,10 +118,10 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:172.24.253.32"
-    - "orderer1.example.com:172.24.253.32"
-    - "orderer2.example.com:172.24.253.33"
-    - "orderer3.example.com:172.24.253.33"
+    - "orderer0.example.com:39.107.10.177"
+    - "orderer1.example.com:39.107.10.177"
+    - "orderer2.example.com:39.97.158.179"
+    - "orderer3.example.com:39.97.158.179"
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
@@ -129,7 +129,7 @@ services:
     environment:
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
     - CORE_PEER_ID=peer0.org1.example.com
-    - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+    - CORE_PEER_ADDRESS=39.107.10.177:7051
     - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
     - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
     - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
@@ -244,13 +244,13 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:172.24.253.32"
-    - "orderer1.example.com:172.24.253.32"
-    - "orderer2.example.com:172.24.253.33"
-    - "orderer3.example.com:172.24.253.33"
-    - "peer1.org1.example.com:172.24.253.32"
-    - "peer0.org2.example.com:172.24.253.33"
-    - "peer1.org2.example.com:172.24.253.33"
+    - "orderer0.example.com:39.107.10.177"
+    - "orderer1.example.com:39.107.10.177"
+    - "orderer2.example.com:39.97.158.179"
+    - "orderer3.example.com:39.97.158.179"
+    - "peer1.org1.example.com:39.107.10.177"
+    - "peer0.org2.example.com:39.97.158.179"
+    - "peer1.org2.example.com:39.97.158.179"
 
   peer1.org1.example.com:
     container_name: peer1.org1.example.com
@@ -258,7 +258,7 @@ services:
     environment:
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
     - CORE_PEER_ID=peer1.org1.example.com
-    - CORE_PEER_ADDRESS=peer1.org1.example.com:8051
+    - CORE_PEER_ADDRESS=39.107.10.177:8051
     - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
     - CORE_PEER_CHAINCODEADDRESS=peer1.org1.example.com:8052
     - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
@@ -373,13 +373,13 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:172.24.253.32"
-    - "orderer1.example.com:172.24.253.32"
-    - "orderer2.example.com:172.24.253.33"
-    - "orderer3.example.com:172.24.253.33"
-    - "peer0.org1.example.com:172.24.253.32"
-    - "peer0.org2.example.com:172.24.253.33"
-    - "peer1.org2.example.com:172.24.253.33"
+    - "orderer0.example.com:39.107.10.177"
+    - "orderer1.example.com:39.107.10.177"
+    - "orderer2.example.com:39.97.158.179"
+    - "orderer3.example.com:39.97.158.179"
+    - "peer0.org1.example.com:39.107.10.177"
+    - "peer0.org2.example.com:39.97.158.179"
+    - "peer1.org2.example.com:39.97.158.179"
 
   cli1:
     container_name: cli1
@@ -391,7 +391,7 @@ services:
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
     - FABRIC_LOGGING_SPEC=INFO
     - CORE_PEER_ID=cli1
-    - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+    - CORE_PEER_ADDRESS=39.107.10.177:7051
     - CORE_PEER_LOCALMSPID=Org1MSP
     - CORE_PEER_TLS_ENABLED=true
     - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt
@@ -408,14 +408,14 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:172.24.253.32"
-    - "orderer1.example.com:172.24.253.32"
-    - "orderer2.example.com:172.24.253.33"
-    - "orderer3.example.com:172.24.253.33"
-    - "peer0.org1.example.com:172.24.253.32"
-    - "peer1.org1.example.com:172.24.253.32"
-    - "peer0.org2.example.com:172.24.253.33"
-    - "peer1.org2.example.com:172.24.253.33"
+    - "orderer0.example.com:39.107.10.177"
+    - "orderer1.example.com:39.107.10.177"
+    - "orderer2.example.com:39.97.158.179"
+    - "orderer3.example.com:39.97.158.179"
+    - "peer0.org1.example.com:39.107.10.177"
+    - "peer1.org1.example.com:39.107.10.177"
+    - "peer0.org2.example.com:39.97.158.179"
+    - "peer1.org2.example.com:39.97.158.179"
 
   cli2:
     container_name: cli2
@@ -427,7 +427,7 @@ services:
     - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
     - FABRIC_LOGGING_SPEC=INFO
     - CORE_PEER_ID=cli2
-    - CORE_PEER_ADDRESS=peer1.org1.example.com:8051
+    - CORE_PEER_ADDRESS=39.107.10.177:8051
     - CORE_PEER_LOCALMSPID=Org1MSP
     - CORE_PEER_TLS_ENABLED=true
     - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/server.crt
@@ -444,11 +444,11 @@ services:
     networks:
     - test
     extra_hosts:
-    - "orderer0.example.com:172.24.253.32"
-    - "orderer1.example.com:172.24.253.32"
-    - "orderer2.example.com:172.24.253.33"
-    - "orderer3.example.com:172.24.253.33"
-    - "peer0.org1.example.com:172.24.253.32"
-    - "peer1.org1.example.com:172.24.253.32"
-    - "peer0.org2.example.com:172.24.253.33"
-    - "peer1.org2.example.com:172.24.253.33"
+    - "orderer0.example.com:39.107.10.177"
+    - "orderer1.example.com:39.107.10.177"
+    - "orderer2.example.com:39.97.158.179"
+    - "orderer3.example.com:39.97.158.179"
+    - "peer0.org1.example.com:39.107.10.177"
+    - "peer1.org1.example.com:39.107.10.177"
+    - "peer0.org2.example.com:39.97.158.179"
+    - "peer1.org2.example.com:39.97.158.179"
