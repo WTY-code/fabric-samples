@@ -56,7 +56,7 @@ for machine in 1 2; do
   done
 done
 echo "===== 加入Peer节点 done ====="
-sleep 10
+sleep 5
 
 echo "===== 检查各节点账本高度 ====="
 # 检查各节点账本高度
@@ -68,7 +68,7 @@ for machine in 1 2; do
   for cli in cli1 cli2; do
     echo "ledger height: $MACHINE${machine} $cli"
     run_remote ${!ip_var} ${!pass_var} "docker exec $cli peer channel getinfo -c mychannel"
-    sleep 5
+    sleep 2
   done
 done
 echo "===== 检查各节点账本高度 done====="
@@ -78,12 +78,12 @@ echo "===== 设置锚节点 ====="
 run_remote $MACHINE1_IP $MACHINE1_PASS "docker cp setOrg1Anchor.sh cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer"
 run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 chmod +x setOrg1Anchor.sh"
 run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 ./setOrg1Anchor.sh"
-sleep 10
+sleep 5
 
 run_remote $MACHINE2_IP $MACHINE2_PASS "docker cp setOrg2Anchor.sh cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer"
 run_remote $MACHINE2_IP $MACHINE2_PASS "docker exec cli1 chmod +x setOrg2Anchor.sh"
 run_remote $MACHINE2_IP $MACHINE2_PASS "docker exec cli1 ./setOrg2Anchor.sh"
-sleep 10
+sleep 5
 
 echo "===== 检查各节点账本高度 ====="
 # 检查各节点账本高度
@@ -95,7 +95,7 @@ for machine in 1 2; do
   for cli in cli1 cli2; do
     echo "ledger height: $MACHINE${machine} $cli"
     run_remote ${!ip_var} ${!pass_var} "docker exec $cli peer channel getinfo -c mychannel"
-    sleep 5
+    sleep 2
   done
 done
 echo "===== 检查各节点账本高度 done====="
@@ -219,7 +219,7 @@ done
 rm $LOCAL_TMP_DIR/fabcar.tar.gz
 rmdir $LOCAL_TMP_DIR
 
-sleep 10
+sleep 5
 
 # 检查各个peer节点链码安装情况
 for machine in 1 2; do
