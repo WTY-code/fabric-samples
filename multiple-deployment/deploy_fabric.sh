@@ -5,6 +5,12 @@ MACHINE1_IP=$1
 MACHINE1_PASS=$2
 MACHINE2_IP=$3
 MACHINE2_PASS=$4
+
+# 链码配置参数
+CHAINCODE_NAME=${5:-"fabcar"}        # 链码名称
+CHAINCODE_VERSION=${6:-"1.0"}        # 链码版本
+# CHAINCODE_PATH=${7:-"/opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go"}  # 链码路径
+
 WORK_DIR="/root/ruc/fabric-samples/multiple-deployment"
 LOCAL_TMP_DIR="/root/ruc/fabric-samples/multiple-deployment/tmp"
 
@@ -184,39 +190,40 @@ echo "===== 检查各节点账本高度 done====="
 # 步骤5: 修复链码安装
 echo "===== 安装链码 ====="
 # 在机器1的cli1容器中打包链码
-run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode package /opt/gopath/src/github.com/hyperledger/fabric/peer/fabcar.tar.gz --path /opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go --lang golang --label fabcar_1.0"
+CHAINCODE_LABEL="${CHAINCODE_NAME}_${CHAINCODE_VERSION}"
+run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode package /opt/gopath/src/github.com/hyperledger/fabric/peer/${CHAINCODE_NAME}.tar.gz --path /opt/gopath/src/github.com/hyperledger/multiple-deployment/chaincode/go --lang golang --label ${CHAINCODE_LABEL}"
 
 # 将链码包从机器1的容器复制到宿主机
-run_remote $MACHINE1_IP $MACHINE1_PASS "docker cp cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer/fabcar.tar.gz $WORK_DIR"
+run_remote $MACHINE1_IP $MACHINE1_PASS "docker cp cli1:/opt/gopath/src/github.com/hyperledger/fabric/peer/${CHAINCODE_NAME}.tar.gz $WORK_DIR"
 
 # 将链码包从机器1复制到本地
-sshpass -p $MACHINE1_PASS scp root@$MACHINE1_IP:$WORK_DIR/fabcar.tar.gz $LOCAL_TMP_DIR
+sshpass -p $MACHINE1_PASS scp root@$MACHINE1_IP:$WORK_DIR/${CHAINCODE_NAME}.tar.gz $LOCAL_TMP_DIR
 # echo "看multiple-deployment和multiple-deployment/tmp是否有链码包"
 
 # 获取链码包ID（在机器1）
-# PACKAGE_ID=$(peer lifecycle chaincode calculatepackageid $LOCAL_TMP_DIR/fabcar.tar.gz | tr -d '\r')
-PACKAGE_ID=$(sshpass -p $MACHINE1_PASS ssh root@$MACHINE1_IP "docker exec cli1 peer lifecycle chaincode calculatepackageid fabcar.tar.gz" | tr -d '\r')
+# PACKAGE_ID=$(peer lifecycle chaincode calculatepackageid $LOCAL_TMP_DIR/${CHAINCODE_NAME}.tar.gz | tr -d '\r')
+PACKAGE_ID=$(sshpass -p $MACHINE1_PASS ssh root@$MACHINE1_IP "docker exec cli1 peer lifecycle chaincode calculatepackageid ${CHAINCODE_NAME}.tar.gz" | tr -d '\r')
 echo "链码包ID: $PACKAGE_ID"
 
 # 分发链码包到所有机器
 for machine in 1 2; do
   ip_var="MACHINE${machine}_IP"
   pass_var="MACHINE${machine}_PASS"
-  
+
   # 跳过机器1（已经有链码包）
   if [ "$machine" != "1" ]; then
-    sshpass -p ${!pass_var} scp $LOCAL_TMP_DIR/fabcar.tar.gz root@${!ip_var}:$WORK_DIR/
+    sshpass -p ${!pass_var} scp $LOCAL_TMP_DIR/${CHAINCODE_NAME}.tar.gz root@${!ip_var}:$WORK_DIR/
   fi
-  
+
   # 在所有容器上安装链码
   for cli in cli1 cli2; do
-    run_remote ${!ip_var} ${!pass_var} "docker cp $WORK_DIR/fabcar.tar.gz $cli:/opt/gopath/src/github.com/hyperledger/fabric/peer"
-    run_remote ${!ip_var} ${!pass_var} "docker exec $cli peer lifecycle chaincode install /opt/gopath/src/github.com/hyperledger/fabric/peer/fabcar.tar.gz"
+    run_remote ${!ip_var} ${!pass_var} "docker cp $WORK_DIR/${CHAINCODE_NAME}.tar.gz $cli:/opt/gopath/src/github.com/hyperledger/fabric/peer"
+    run_remote ${!ip_var} ${!pass_var} "docker exec $cli peer lifecycle chaincode install /opt/gopath/src/github.com/hyperledger/fabric/peer/${CHAINCODE_NAME}.tar.gz"
   done
 done
 
 # 清理本地临时文件
-rm $LOCAL_TMP_DIR/fabcar.tar.gz
+rm $LOCAL_TMP_DIR/${CHAINCODE_NAME}.tar.gz
 rmdir $LOCAL_TMP_DIR
 
 sleep 5
@@ -294,13 +301,13 @@ echo "===== 部署链码序列1 ====="
 run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode approveformyorg -o orderer0.example.com:7050 \
   --ordererTLSHostnameOverride orderer0.example.com --tls \
   --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem \
-  --channelID mychannel --name fabcar --version 1.0 \
+  --channelID mychannel --name ${CHAINCODE_NAME} --version ${CHAINCODE_VERSION} \
   --package-id $PACKAGE_ID --sequence 1"
 
 run_remote $MACHINE2_IP $MACHINE2_PASS "docker exec cli1 peer lifecycle chaincode approveformyorg -o orderer0.example.com:7050 \
   --ordererTLSHostnameOverride orderer0.example.com --tls \
   --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem \
-  --channelID mychannel --name fabcar --version 1.0 \
+  --channelID mychannel --name ${CHAINCODE_NAME} --version ${CHAINCODE_VERSION} \
   --package-id $PACKAGE_ID --sequence 1"
 
 # 检查所有组织是否已批准
@@ -313,7 +320,7 @@ for i in $(seq 1 $MAX_CHECKS); do
   echo "检查批准状态 (尝试 $i/$MAX_CHECKS) ..."
   
   # 在机器1上检查批准状态（使用jq解析）
-  APPROVAL_JSON=$(run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name fabcar --version 1.0 --sequence 1 --output json")
+  APPROVAL_JSON=$(run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name ${CHAINCODE_NAME} --version ${CHAINCODE_VERSION} --sequence 1 --output json")
   
   ORG1_APPROVED=$(echo $APPROVAL_JSON | jq -r '.approvals.Org1MSP')
   ORG2_APPROVED=$(echo $APPROVAL_JSON | jq -r '.approvals.Org2MSP')
@@ -339,7 +346,7 @@ if [ $ALL_APPROVED -eq 1 ]; then
   run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode commit \
     -o orderer0.example.com:7050 --tls \
     --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem \
-    --channelID mychannel --name fabcar --version 1.0 --sequence 1 \
+    --channelID mychannel --name ${CHAINCODE_NAME} --version ${CHAINCODE_VERSION} --sequence 1 \
     --peerAddresses peer0.org1.example.com:7051 \
     --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt \
     --peerAddresses peer0.org2.example.com:7051 \
@@ -354,13 +361,13 @@ echo "===== 部署链码序列2 ====="
 run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode approveformyorg -o orderer0.example.com:7050 \
   --ordererTLSHostnameOverride orderer0.example.com --tls \
   --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem \
-  --channelID mychannel --name fabcar --version 1.0 \
+  --channelID mychannel --name ${CHAINCODE_NAME} --version ${CHAINCODE_VERSION} \
   --package-id $PACKAGE_ID --sequence 2"
 
 run_remote $MACHINE2_IP $MACHINE2_PASS "docker exec cli1 peer lifecycle chaincode approveformyorg -o orderer0.example.com:7050 \
   --ordererTLSHostnameOverride orderer0.example.com --tls \
   --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem \
-  --channelID mychannel --name fabcar --version 1.0 \
+  --channelID mychannel --name ${CHAINCODE_NAME} --version ${CHAINCODE_VERSION} \
   --package-id $PACKAGE_ID --sequence 2"
 
 # 检查所有组织是否已批准
@@ -371,7 +378,7 @@ for i in $(seq 1 $MAX_CHECKS); do
   echo "检查批准状态 (尝试 $i/$MAX_CHECKS) ..."
   
   # 在机器1上检查批准状态（使用jq解析）
-  APPROVAL_JSON=$(run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name fabcar --version 1.0 --sequence 2 --output json")
+  APPROVAL_JSON=$(run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode checkcommitreadiness --channelID mychannel --name ${CHAINCODE_NAME} --version ${CHAINCODE_VERSION} --sequence 2 --output json")
   
   ORG1_APPROVED=$(echo $APPROVAL_JSON | jq -r '.approvals.Org1MSP')
   ORG2_APPROVED=$(echo $APPROVAL_JSON | jq -r '.approvals.Org2MSP')
@@ -397,7 +404,7 @@ if [ $ALL_APPROVED -eq 1 ]; then
   run_remote $MACHINE2_IP $MACHINE2_PASS "docker exec cli1 peer lifecycle chaincode commit \
     -o orderer0.example.com:7050 --tls \
     --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem \
-    --channelID mychannel --name fabcar --version 1.0 --sequence 2 \
+    --channelID mychannel --name ${CHAINCODE_NAME} --version ${CHAINCODE_VERSION} --sequence 2 \
     --peerAddresses peer0.org1.example.com:7051 \
     --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt \
     --peerAddresses peer0.org2.example.com:7051 \
@@ -409,7 +416,7 @@ fi
 
 # 验证链码已提交（可选）
 echo "===== 验证链码提交 ====="
-run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode querycommitted --channelID mychannel --name fabcar"
-run_remote $MACHINE2_IP $MACHINE2_PASS "docker exec cli1 peer lifecycle chaincode querycommitted --channelID mychannel --name fabcar"
+run_remote $MACHINE1_IP $MACHINE1_PASS "docker exec cli1 peer lifecycle chaincode querycommitted --channelID mychannel --name ${CHAINCODE_NAME}"
+run_remote $MACHINE2_IP $MACHINE2_PASS "docker exec cli1 peer lifecycle chaincode querycommitted --channelID mychannel --name ${CHAINCODE_NAME}"
 
 echo "===== 部署完成 ====="
